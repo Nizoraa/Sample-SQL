@@ -1,0 +1,15 @@
+describe table Product_discount_rates;
+
+create or replace temporary table Weighted_Discount_Rates as
+(select Tranch_Date
+        , case when product_id in ('76', '56', '23', '10') then 'Age of Empires'
+               when product_id in ('20', '13', '98', '45') then 'Harry Potter'
+               when product_id in ('51', '75', '34', '11') then 'World of Warcraft'
+               end as Product_Name
+         , sum(Price*Rate)/sum(Price) as Weighted_discount_rate
+ from Product_discount_rates
+  where Tranch_Date = (select max(Tranch_Date) from Product_discount_rates)
+  and Store_Product_Name like 'VideoGames%'
+  Group by Product_Name, Tranch_Date);
+  
+  select * from Weighted_Discount_Rates;
