@@ -1,0 +1,12 @@
+select date, sum(customer_sales)/count( customer_sales) as SalesPerCustomer
+           case when B.revenue < 1000000 then '<$1M'
+                when B.revenue < 5000000 and B.revenue >= 1000000 then '$1-5M'
+                when B.revenue > 5000000 then '>$5M'
+                else 'Unknown'
+                End as Customer_Segment
+from Customer_Metrics_Table as A
+left outer join Business_Metrics_Table as B
+on A.Customer_ID = B.Business_ID
+where Date >= '2021-01-01'
+and Account_status in ('Open')
+Group by 1,3;
